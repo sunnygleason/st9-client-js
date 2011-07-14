@@ -1,0 +1,14 @@
+{
+  "author": "",
+  "name": "st9",
+  "description": "st9 client for node.js",
+  "version": "0.0.0",
+  "repository": {
+    "url": ""
+  },
+  "engines": {
+    "node": "~v0.4.9"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
