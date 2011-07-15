@@ -17,6 +17,10 @@ h.add_test(s, 'connectivity failure : bad port', function() { badport.admin_expo
 
 h.add_test(s, 'nuke', function() { client.admin_nuke(false, this.callback); }, h.r_eq(200, null, null));
 
+h.add_test(s, 'export_all', function() { client.admin_export(this.callback); }, h.r_eq(200, '{"id":"@$schema:1a9ec16ad6118ca9","kind":"$schema","$type":"$key","version":"1","attributes":[],"indexes":[],"counters":[]}\n', null));
+
+h.add_test(s, 'nuke', function() { client.admin_nuke(false, this.callback); }, h.r_eq(200, null, null));
+
 h.add_test(s, 'schema_create[0]', function() { client.schema_create('foo', schema(), this.callback); }, h.r_like(200, schema, null));
 h.add_test(s, 'schema_create[1]', function() { client.schema_create('foo', schema(), this.callback); }, h.r_eq(409, null, "schema already exists"));
 
