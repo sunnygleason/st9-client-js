@@ -34,6 +34,17 @@ h.add_test(s, 'entity_get_bad_id_string[1]', function() { client.entity_get(':1'
 h.add_test(s, 'entity_get_bad_id_string[2]', function() { client.entity_get('@foo:1', this.callback); }, h.r_like(400, null, 'Invalid key'));
 h.add_test(s, 'entity_get_bad_id_empty',     function() { client.entity_get('', this.callback); }, h.r_like(400, null, "Missing entity 'id' in path"));
 
+h.add_test(s, 'entity_multiget_bad_key[0]',
+  function() { client.entity_multiget([':909'], this.callback); },
+  h.r_eq(400, null, "Invalid entity 'type': "));
+
+h.add_test(s, 'entity_multiget_bad_keys',
+  function() { client.entity_multiget(['foo:'], this.callback); },
+  h.r_eq(400, null, "Invalid key"));
+
+h.add_test(s, 'entity_multiget_bad_keys',
+  function() { client.entity_multiget(['@foo:1'], this.callback); },
+  h.r_eq(400, null, "Invalid key"));
 
 h.add_test(s, 'nuke[1]', function() { client.admin_nuke(false, this.callback); }, h.r_eq(200, null, null));
 h.add_test(s, 'schema_create[1]', function() { client.schema_create('foo', point0(), this.callback); }, h.r_like(200, point0(), null));
