@@ -21,7 +21,7 @@ h.add_test(s, 'export_all', function() { client.admin_export(this.callback); }, 
 
 h.add_test(s, 'nuke', function() { client.admin_nuke(false, this.callback); }, h.r_eq(200, null, null));
 
-h.add_test(s, 'schema_create[0]', function() { client.schema_create('foo', schema(), this.callback); }, h.r_like(200, schema, null));
+h.add_test(s, 'schema_create[0]', function() { client.schema_create('foo', schema(), this.callback); }, h.r_like(200, schema(), null));
 h.add_test(s, 'schema_create[1]', function() { client.schema_create('foo', schema(), this.callback); }, h.r_eq(409, null, "schema already exists"));
 
 h.add_n_tests(s, 10,
