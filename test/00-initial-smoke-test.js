@@ -53,7 +53,7 @@ h.add_n_tests(s, 10,
 
 var n = Date.now();
 
-h.add_n_tests(s, 1,
+h.add_n_tests(s, 10,
   function(i) { return 'entity_update[' + i + ']' },
   function(i) {
     return function() {
