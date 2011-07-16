@@ -15,12 +15,13 @@ var point2 = function() { return test_schema.point_schema(false, true) };
 h.add_test(s, 'nuke[0]', function() { client.admin_nuke(false, this.callback); }, h.r_eq(200, null, null));
 h.add_test(s, 'schema_create[0]', function() { client.schema_create('foo', point0(), this.callback); }, h.r_like(200, point0(), null));
 
-h.add_test(s, 'entity_create_ok_x_null',   function() { client.entity_create('foo', {y:-1}, this.callback); }, h.r_like(200, {kind:"foo",version:1,x:undefined,y:-1}, null));
+h.add_test(s, 'entity_create_ok_y_null',   function() { client.entity_create('foo', {x:1}, this.callback); }, h.r_like(200, {kind:"foo",version:1,x:1}, null));
 
 h.add_test(s, 'entity_create_bad_type_empty',   function() { client.entity_create('', {x:1,y:-1}, this.callback); }, h.r_like(400, null, "Missing entity 'type' in path"));
 h.add_test(s, 'entity_create_bad_type_unknown', function() { client.entity_create('bar', {x:1,y:-1}, this.callback); }, h.r_like(400, null, "Invalid entity 'type': bar"));
 h.add_test(s, 'entity_create_bad_x_string',     function() { client.entity_create('foo', {x:"something",y:-1}, this.callback); }, h.r_like(400, null, "'x' is not a valid integer"));
 h.add_test(s, 'entity_create_bad_x_bool',       function() { client.entity_create('foo', {x:true,y:-1}, this.callback); }, h.r_like(400, null, "'x' is not a valid integer"));
+h.add_test(s, 'entity_create_bad_x_null',       function() { client.entity_create('foo', {y:-1}, this.callback); }, h.r_like(400, null, 'attribute must not be null: x'));
 
 h.add_test(s, 'entity_create_bad_entity_null',   function() { client.entity_create('foo', null, this.callback); }, h.r_like(400, null, "Invalid entity 'value'"));
 h.add_test(s, 'entity_create_bad_entity_array',  function() { client.entity_create('foo', [1, 2, 3], this.callback); }, h.r_like(400, null, "Invalid entity 'value'"));

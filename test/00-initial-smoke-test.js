@@ -43,6 +43,15 @@ h.add_test(s, 'index_get[1]', function() { client.index_get("foo", "xy", "x gt 5
 h.add_test(s, 'index_get[2]', function() { client.index_get("foo", "xy", "x gt 500", this.callback); },
   h.r_eq(200, {"kind":"foo","index":"xy","query":"x gt 500","results":[],"pageSize":100,"next":null,"prev":null}, null));
 
+h.add_test(s, 'index_get[3]', function() { client.index_get("foo", "xy", "x in (1, 2, 3)", this.callback); },
+  h.r_eq(200, {"kind":"foo","index":"xy","query":"x in (1, 2, 3)","results":[{id:'@foo:190272f987c6ac27'},{id:'@foo:ce4ad6a1cd6293d9'},{id:'@foo:573c812fe6841168'}],"pageSize":100,"next":null,"prev":null}, null));
+
+h.add_test(s, 'index_get[4]', function() { client.index_get("foo", "xy", "x in (1, 2, 3) and id in (2, 3)", this.callback); },
+  h.r_eq(400, null, "invalid attribute value for 'id'"));
+
+h.add_test(s, 'index_get[5]', function() { client.index_get("foo", "xy", 'x in (1, 2, 3) and id in ("@foo:190272f987c6ac27", "@foo:573c812fe6841168")', this.callback); },
+  h.r_eq(200, {"kind":"foo","index":"xy","query":'x in (1, 2, 3) and id in ("@foo:190272f987c6ac27", "@foo:573c812fe6841168")',"results":[{id:'@foo:190272f987c6ac27'},{id:'@foo:573c812fe6841168'}],"pageSize":100,"next":null,"prev":null}, null));
+
 h.add_test(s, 'counter_get[0]', function() { client.counter_get("foo", "by_x", [5], this.callback); },
   h.r_eq(200, {"kind":"foo","counter":"by_x","query":{"x":5},"results":[{"count":1}],"pageSize":1000,"next":null,"prev":null}, null));
 
