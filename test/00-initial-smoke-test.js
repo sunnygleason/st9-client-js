@@ -5,6 +5,7 @@ var vows         = require('vows');
 var h            = require('./vows_helper.js');
 
 var schema  = function() { return test_schema.point_schema(true, true) };
+var awesome_schema  = function() { return test_schema.awesome_schema(true, true) };
 
 var client  = new st9.St9Client('localhost', 7331);
 var badhost = new st9.St9Client('doesntexistasdf.com', 7331);
@@ -93,5 +94,33 @@ h.add_n_tests(s, 10,
   function(i) { return function() { client.entity_get('foo:' + i, this.callback); } },
   function(i) { return h.r_like(404, null, null); }
 );
+
+h.add_test(s, 'schema_create[2]', function() { client.schema_create('awesome', awesome_schema(), this.callback); }, h.r_like(200, awesome_schema(), null));
+
+h.add_test(s, 'counter_get[2]', function() { client.counter_get("awesome", "by_awesomeness", [], this.callback); },
+  h.r_eq(200, {"kind":"awesome","counter":"by_awesomeness","query":{},"results":[],"pageSize":1000,"next":null,"prev":null}, null));
+
+h.add_n_tests(s, 10,
+  function(i) { return 'entity_create_awesome[' + i + ']' },
+  function(i) { return function() { client.entity_create('awesome', {isAwesome:(i % 2 == 0)}, this.callback); } },
+  function(i) { return h.r_like(200, {kind:'awesome', version:1, isAwesome:(i % 2 == 0)}, null) }
+);
+
+h.add_test(s, 'counter_get[3]', function() { client.counter_get("awesome", "by_awesomeness", [], this.callback); },
+  h.r_eq(200, {"kind":"awesome","counter":"by_awesomeness","query":{},"results":[{isAwesome:false,count:5},{isAwesome:true,count:5}],"pageSize":1000,"next":null,"prev":null}, null));
+
+h.add_test(s, 'counter_create_awesome11', function() { client.entity_create('awesome', {isAwesome:true}, this.callback); }, h.r_like(200, {isAwesome:true}, null));
+
+h.add_test(s, 'counter_get[4]', function() { client.counter_get("awesome", "by_awesomeness", [], this.callback); },
+  h.r_eq(200, {"kind":"awesome","counter":"by_awesomeness","query":{},"results":[{isAwesome:false,count:5},{isAwesome:true,count:6}],"pageSize":1000,"next":null,"prev":null}, null));
+
+h.add_n_tests(s, 11,
+  function(i) { return 'entity_delete_awesome[' + i + ']' },
+  function(i) { return function() { client.entity_delete('awesome:' + i, this.callback); } },
+  function(i) { return h.r_eq(200, null, null) }
+);
+
+h.add_test(s, 'counter_get[5]', function() { client.counter_get("awesome", "by_awesomeness", [], this.callback); },
+  h.r_eq(200, {"kind":"awesome","counter":"by_awesomeness","query":{},"results":[],"pageSize":1000,"next":null,"prev":null}, null));
 
 s.export(module);

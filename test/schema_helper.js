@@ -18,3 +18,11 @@ var point_schema = function(index, count) {
 
 exports.point_schema = point_schema;
 
+var awesome_schema = function(index, count) {
+  return make_schema(
+    [{name:"isAwesome",type:"BOOLEAN",nullable:false}],
+    (index ? [{"name":"is_awesome_asc","cols":[{"name":"isAwesome","sort":"ASC"},{"name":"id","sort":"ASC"}]}] : []),
+    (count ? [{"name":"by_awesomeness","cols":[{"name":"isAwesome","sort":"ASC"}]}] : []));
+}
+
+exports.awesome_schema = awesome_schema;
