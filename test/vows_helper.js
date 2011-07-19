@@ -19,9 +19,9 @@ exports.add_n_tests = add_n_tests;
 
 function r_eq(code, body, reason) {
 	return function(a, s) {
-      assert.equal(a.status, code);
       assert.deepEqual(a.body, body);
       assert.equal(a.reason, reason);
+      assert.equal(a.status, code);
 	};
 }
 
@@ -29,11 +29,15 @@ exports.r_eq = r_eq;
 
 function r_like(code, some_body, reason) {
 	return function(a, s) {
-      assert.equal(a.status, code);
-      for (k in some_body) {
-        assert.deepEqual(a.body[k], some_body[k]);
+      if (a == null && some_body == null) {
+        // ok, same
+      } else {
+        for (k in some_body) {
+          assert.deepEqual(a.body[k], some_body[k]);
+        }
       }
       assert.equal(a.reason, reason);
+      assert.equal(a.status, code);
 	};
 }
 
