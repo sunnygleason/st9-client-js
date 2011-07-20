@@ -90,4 +90,12 @@ h.add_n_tests(s, 10,
     h.r_eq(400, null, "'" + x + "' must be greater than or equal to " + (test_schema.make_alltypes_min()[x])));
 });
 
+h.add_test(s, 'schema_create_all0_max_smallstring',
+  function() {
+    var x = test_schema.make_alltypes_max();
+    x.s += " ";
+    client.entity_create('all0', x, this.callback);
+  },
+  h.r_eq(400, null, "'s' length must be less than or equal to 255"));
+
 s.export(module);
