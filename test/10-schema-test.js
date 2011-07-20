@@ -17,6 +17,21 @@ function awesome2() { return test_schema.awesome_schema(false, true); }
 
 function all0() { return test_schema.alltypes_schema(); }
 
+function inc(x, f, d) {
+  var v = x[f];
+  if ((typeof v === 'string') || v instanceof String) {
+    // this is a special-case hack just to inc/dec maximum long integers;
+    // it is not a real addition function!!!
+    var c = parseInt(new String(v[v.length - 1]));
+    c += ((v[0] == '-') ? -d : d);
+    x[f] = v.substring(0, v.length - 1) + c.toString();
+  } else {
+    x[f] = v + d;
+  }
+
+  return x;
+}
+
 h.add_test(s, 'nuke[0]', function() { client.admin_nuke(false, this.callback); }, h.r_eq(200, null, null));
 
 [point0, point1, point2].forEach(function(x) {
@@ -64,5 +79,15 @@ h.add_n_tests(s, 10,
   function(i) { return function() { client.entity_create('all0', test_schema.make_alltypes_min(), this.callback); } },
   function(i) { return h.r_like(200, test_schema.make_alltypes_min(), null) }
 );
+
+['u1','u2','u4','u8','i1','i2','i4','i8'].forEach(function(x) {
+  h.add_test(s, 'schema_create_all0_max_' + x, function() { client.entity_create('all0', inc(test_schema.make_alltypes_max(), x, 1), this.callback); },
+    h.r_eq(400, null, "'" + x + "' must be less than or equal to " + (test_schema.make_alltypes_max()[x])));
+});
+
+['u1','u2','u4','u8','i1','i2','i4','i8'].forEach(function(x) {
+  h.add_test(s, 'schema_create_all0_min_' + x, function() { client.entity_create('all0', inc(test_schema.make_alltypes_min(), x, -1), this.callback); },
+    h.r_eq(400, null, "'" + x + "' must be greater than or equal to " + (test_schema.make_alltypes_min()[x])));
+});
 
 s.export(module);
