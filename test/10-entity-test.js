@@ -91,7 +91,18 @@ h.add_n_tests(s, 10,
 	},
   function(i) { return h.r_like(200, {kind:'foo', version:2, x:i, y:-i, z:n}, null); }
 );
- 
+
+h.add_n_tests(s, 10,
+  function(i) { return 'entity_get_and_update_200[' + i + ']' },
+  function(i) {
+    return function() {
+	  return function(cc) {
+        client.entity_get_and_update('foo:' + i, function(a) { a.u = "get_and_update works ["+ i + "]"; return a; }, cc);
+      }(this.callback);
+    };},
+  function(i) { return h.r_like(200, {kind:'foo', version:3, x:i, y:-i, z:n, u:"get_and_update works ["+ i + "]"}, null); }
+);
+
 h.add_n_tests(s, 10,
   function(i) { return 'entity_update_400[' + i + ']' },
   function(i) {

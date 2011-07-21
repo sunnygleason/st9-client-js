@@ -34,20 +34,54 @@ function inc(x, f, d) {
 
 h.add_test(s, 'nuke[0]', function() { client.admin_nuke(false, this.callback); }, h.r_eq(200, null, null));
 
-[point0, point1, point2].forEach(function(x) {
-	h.add_test(s, 'schema_create_' + x.name, function() { client.schema_create(x.name, x(), this.callback); }, h.r_like(200, x(), null));
+function addZ(s) { s.attributes.push({name:'z',type:'I32'}); return s; }
+function delZ(s) { s.attributes.pop(); return s; }
 
-	h.add_n_tests(s, 10,
-	  function(i) { return 'entity_create_' + x.name + '[' + i + ']' },
-	  function(i) { return function() { client.entity_create(x.name, {x:i,y:-i}, this.callback); } },
-	  function(i) { return h.r_like(200, {kind:x.name, version:1, x:i, y:-i}, null) }
-	);
+[point0, point1, point2].forEach(function(x) {
+  h.add_test(s, 'schema_create_' + x.name, function() { client.schema_create(x.name, x(), this.callback); }, h.r_like(200, x(), null));
+
+  h.add_n_tests(s, 10,
+    function(i) { return 'entity_create_' + x.name + '[' + i + ']' },
+    function(i) { return function() { client.entity_create(x.name, {x:i,y:-i}, this.callback); } },
+    function(i) { return h.r_like(200, {kind:x.name, version:1, x:i, y:-i}, null) }
+  );
+
+  h.add_test(s, 'schema_get_and_update1_' + x.name,
+    function() {
+      client.schema_get_and_update(x.name, function(a) { return addZ(a); }, this.callback);
+    }, h.r_like(200, addZ(x()), null));
 	
-	h.add_n_tests(s, 10,
-	  function(i) { return 'entity_delete_' + x.name + '[' + i + ']' },
-	  function(i) { return function() { client.entity_delete(x.name + ":" + i, this.callback); } },
-	  function(i) { return h.r_like(200, null, null) }
-	);
+  h.add_n_tests(s, 5,
+    function(i) { return 'entity_delete_' + x.name + '[' + i + ']' },
+    function(i) { return function() { client.entity_delete(x.name + ":" + i, this.callback); } },
+    function(i) { return h.r_eq(200, null, null) }
+  );
+
+  h.add_test(s, 'schema_update2_' + x.name,
+    function() {
+      client.schema_get(x.name,
+      // slightly tricky, because we must capture this.callback in x
+      // so that we can pass it in the call to client.entity_update
+      function(cc) { return function(a) {
+        client.schema_update(x.name, a.body, cc);
+      }}(this.callback));
+    }, h.r_like(200, addZ(x()), null));
+
+  h.add_n_tests(s, 5,
+    function(i) { return 'entity_delete_' + x.name + '[' + (i + 5) + ']' },
+    function(i) { return function() { client.entity_delete(x.name + ":" + (i + 5), this.callback); } },
+    function(i) { return h.r_eq(200, null, null) }
+  );
+
+  h.add_test(s, 'schema_update3_' + x.name,
+    function() {
+      client.schema_get(x.name,
+      // slightly tricky, because we must capture this.callback in x
+      // so that we can pass it in the call to client.entity_update
+      function(cc) { return function(a) {
+        client.schema_update(x.name, delZ(a.body), cc);
+      }}(this.callback));
+    }, h.r_like(200, x(), null));
 });
 
 [awesome0, awesome1, awesome2].forEach(function(x) {
