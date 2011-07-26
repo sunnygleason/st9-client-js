@@ -28,17 +28,19 @@ function r_eq(code, body, reason) {
 exports.r_eq = r_eq;
 
 function r_like(code, some_body, reason) {
-	return function(a, s) {
-      if (a == null && some_body == null) {
-        // ok, same
-      } else {
-        for (k in some_body) {
-          assert.deepEqual(a.body[k], some_body[k]);
-        }
+  return function(a, s) {
+    if (a == null && some_body == null) {
+      // ok, same
+    } else {
+      for (k in some_body) {
+        assert.deepEqual(a.body[k], some_body[k]);
       }
+    }
+    if (reason) {
       assert.equal(a.reason, reason);
-      assert.equal(a.status, code);
-	};
+    }
+    assert.equal(a.status, code);
+  };
 }
 
 exports.r_like = r_like;

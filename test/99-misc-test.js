@@ -64,11 +64,17 @@ h.add_test(s, 'schema_delete', function() { client.schema_delete('foo:1', this.c
 
 h.add_test(s, 'schema_create', function() { client.schema_create('message',{"attributes":[{"name":"msg","type":"UTF8_SMALLSTRING"},{"name":"hotness","type":"ENUM","values":["COOL","HOT"]}],"indexes":[{"name":"hotmsg","cols":[{"name":"hotness","sort":"ASC"},{"name":"msg","sort":"ASC"},{"name":"id","sort":"ASC"}]}],"counters":[]}, this.callback); }, h.r_like(200, null, null));
 h.add_test(s, 'entity_create', function() { client.entity_create('message',{"msg":"hello world","hotness":"COOL"}, this.callback); }, h.r_like(200, null, null));
-h.add_test(s, 'entity_create', function() { client.entity_create('message',{"msg":"fly ike a G6","hotness":"HOT"}, this.callback); }, h.r_like(200, null, null));
+h.add_test(s, 'entity_create', function() { client.entity_create('message',{"msg":"fly like a G6","hotness":"HOT"}, this.callback); }, h.r_like(200, null, null));
+h.add_test(s, 'entity_create', function() { client.entity_create('message',{"msg":"\"double\" 'quotes'","hotness":"HOT"}, this.callback); }, h.r_like(200, null, null));
+h.add_test(s, 'entity_create', function() { client.entity_create('message',{"msg":"\"","hotness":"COOL"}, this.callback); }, h.r_like(200, null, null));
+h.add_test(s, 'entity_create', function() { client.entity_create('message',{"msg":'"',"hotness":"COOL"}, this.callback); }, h.r_like(200, null, null));
+h.add_test(s, 'entity_create', function() { client.entity_create('message',{"msg":"''","hotness":"COOL"}, this.callback); }, h.r_like(200, null, null));
 h.add_test(s, 'index_get', function() { client.index_get('message', "hotmsg", "hotness+eq+\"COOL\"", this.callback); }, h.r_like(200, null, null));
 h.add_test(s, 'index_get', function() { client.index_get('message', "hotmsg", "hotness+eq+\"HOT\"", this.callback); }, h.r_like(200, null, null));
-h.add_test(s, 'index_get', function() { client.index_get('message', "hotmsg", "hotness+eq+\"HOT\"+and+msg+lt+\"he\"", this.callback); }, h.r_like(200, null, null));
-h.add_test(s, 'index_get', function() { client.index_get('message', "hotmsg", "hotness+eq+\"HOT\"+and+msg+gt+\"he\"", this.callback); }, h.r_like(200, null, null));
+h.add_test(s, 'index_get', function() { client.index_get('message', "hotmsg", "hotness+eq+\"HOT\"+and+msg+eq+\"\\\"double\\\" 'quotes'\"", this.callback); },
+  h.r_eq(200,{kind:'message',index:'hotmsg',query:"hotness eq \"HOT\" and msg eq \"\\\"double\\\" 'quotes'\"",results:[{id:'@message:07324836639510fe'}],pageSize:100,next:null,prev:null}, null));
+h.add_test(s, 'index_get', function() { client.index_get('message', "hotmsg", "hotness+eq+\"COOL\"+and+msg+eq+\"\\\"\"", this.callback); },
+  h.r_eq(200,{kind:'message',index:'hotmsg',query:"hotness eq \"COOL\" and msg eq \"\\\"\"",results:[{id:'@message:27955107deb3f41d'},{id:'@message:f5bc7f381e996933'}],pageSize:100,next:null,prev:null}, null));
 
 var awesome_schema = {"attributes":[{"name":"isAwesome","type":"BOOLEAN"}],"indexes":[],"counters":[]};
 

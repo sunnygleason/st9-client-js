@@ -104,3 +104,30 @@ var make_alltypes_min = function() {
 }
 
 exports.make_alltypes_min = make_alltypes_min;
+
+exports.make_alltypes_min = make_alltypes_min;
+
+var make_alltypes_rand = function() {
+  return {
+    a : [{}],
+    b : false,
+    u1 : 3,
+    u2 : 5,
+    u4 : 17,
+    u8 : 9203,
+    i1 : -14,
+    i2 : -37,
+    i4 : -21,
+    i8 : "-9238",
+    d : "20110101T000000Z",
+    e : "FOO",
+    l : ["foo", "bar"],
+    m : {"foo":"bar", "baz":"quux"},
+    r : "@foo:CAFECAFECAFECAFE",
+    s : "alskdjhf",
+    t : "alskdjhfaksjhdfl"
+  };
+}
+
+exports.make_alltypes_rand = make_alltypes_rand;
+
