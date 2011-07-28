@@ -60,7 +60,7 @@ h.add_test(s, 'entity_get', function() { client.entity_get('rawr', this.callback
 h.add_test(s, 'entity_create', function() { client.entity_create('foo:1', {}, this.callback); }, h.r_like(400, null, "Invalid entity 'type': foo:1"));
 h.add_test(s, 'entity_create', function() { client.entity_create('foo',{"foo":true}, this.callback); }, h.r_eq(200, {id: '@foo:7d9c725a1a203dd4',kind: 'foo',version: '1',foo:true}, null));
 h.add_test(s, 'entity_get', function() { client.entity_get('foo:1', this.callback); }, h.r_eq(200, {id: '@foo:190272f987c6ac27',kind: 'foo',version: '1',x: 1,y: 2011}, null));
-h.add_test(s, 'schema_delete', function() { client.schema_delete('foo:1', this.callback); }, h.r_eq(400, null, "Invalid entity 'type': foo:1"));
+h.add_test(s, 'schema_delete', function() { client.schema_delete('foo:1', this.callback); }, h.r_eq(404, null, "type not found"));
 
 h.add_test(s, 'schema_create', function() { client.schema_create('message',{"attributes":[{"name":"msg","type":"UTF8_SMALLSTRING"},{"name":"hotness","type":"ENUM","values":["COOL","HOT"]}],"indexes":[{"name":"hotmsg","cols":[{"name":"hotness","sort":"ASC"},{"name":"msg","sort":"ASC"},{"name":"id","sort":"ASC"}]}],"counters":[]}, this.callback); }, h.r_like(200, null, null));
 h.add_test(s, 'entity_create', function() { client.entity_create('message',{"msg":"hello world","hotness":"COOL"}, this.callback); }, h.r_like(200, null, null));
