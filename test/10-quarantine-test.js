@@ -38,9 +38,21 @@ h.add_n_tests(s, 10,
 );
 
 h.add_n_tests(s, 10,
+  function(i) { return 'entity_not_quarantined_remove_200[' + i + ']' },
+  function(i) { return function() { client.entity_quarantine_remove('foo:' + i, this.callback); } },
+  function(i) { return h.r_like(404, null, null); }
+);
+
+h.add_n_tests(s, 10,
   function(i) { return 'entity_quarantine_200[' + i + ']' },
   function(i) { return function() { client.entity_quarantine_set('foo:' + i, this.callback); } },
   function(i) { return h.r_like(200, null, null); }
+);
+
+h.add_n_tests(s, 10,
+  function(i) { return 'entity_quarantine_already_200[' + i + ']' },
+  function(i) { return function() { client.entity_quarantine_set('foo:' + i, this.callback); } },
+  function(i) { return h.r_like(404, null, null); }
 );
 
 h.add_test(s, 'index get entity (post-quarantine)',
