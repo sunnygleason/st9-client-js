@@ -34,7 +34,7 @@ h.add_test(s, 'index get entity (pre-quarantine)',
 h.add_n_tests(s, 10,
   function(i) { return 'entity_not_quarantined_200[' + i + ']' },
   function(i) { return function() { client.entity_quarantine_get('foo:' + i, this.callback); } },
-  function(i) { return h.r_like(200, null, null); }
+  function(i) { return h.r_like(200, {'$quarantined':false}, null); }
 );
 
 h.add_n_tests(s, 10,
@@ -62,7 +62,7 @@ h.add_test(s, 'index get entity (post-quarantine)',
 h.add_n_tests(s, 10,
   function(i) { return 'entity_is_quarantined_200[' + i + ']' },
   function(i) { return function() { client.entity_quarantine_get('foo:' + i, this.callback); } },
-  function(i) { return h.r_like(404, null, null); }
+  function(i) { return h.r_like(200, {'$quarantined':true}, null); }
 );
 
 h.add_n_tests(s, 10,
@@ -74,7 +74,7 @@ h.add_n_tests(s, 10,
 h.add_n_tests(s, 10,
   function(i) { return 'entity_not_quarantined_200[' + i + ']' },
   function(i) { return function() { client.entity_quarantine_get('foo:' + i, this.callback); } },
-  function(i) { return h.r_like(200, null, null); }
+  function(i) { return h.r_like(200, {'$quarantined':false}, null); }
 );
 
 h.add_test(s, 'index get entity (post-remove-quarantine)',
