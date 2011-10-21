@@ -67,7 +67,7 @@ var make_alltypes_max = function() {
     e : "FOO",
     l : ["list","of","stuff"],
     m : {isMap:true,isArray:false},
-    r : "@foo:CAFECAFECAFECAFE",
+    r : "@foo:cafecafecafecafe",
     s : "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890" +
         "123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890" +
         "123456789012345",
@@ -97,7 +97,7 @@ var make_alltypes_min = function() {
     e : "FOO",
     l : [],
     m : {},
-    r : "@foo:CAFECAFECAFECAFE",
+    r : "@foo:cafecafecafecafe",
     s : "",
     t : ""
   };
@@ -123,7 +123,7 @@ var make_alltypes_rand = function() {
     e : "FOO",
     l : ["foo", "bar"],
     m : {"foo":"bar", "baz":"quux"},
-    r : "@foo:CAFECAFECAFECAFE",
+    r : "@foo:cafecafecafecafe",
     s : "alskdjhf",
     t : "alskdjhfaksjhdfl"
   };

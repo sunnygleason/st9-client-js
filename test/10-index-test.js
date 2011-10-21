@@ -5,9 +5,7 @@ var vows         = require('vows');
 var h            = require('./vows_helper.js');
 
 var client  = new st9.St9Client('localhost', 7331);
-var s = vows.describe('st9 entity tests');
-
-h.add_test(s, 'nuke', function() { client.admin_nuke(false, this.callback); }, h.r_eq(200, null, null));
+var s = vows.describe('st9 index tests');
 
 var point_schema = test_schema.point_schema(true, true);
 
@@ -126,7 +124,7 @@ h.add_n_tests(s, alltypes().attributes.length,
   function(i) { return function() { client.entity_create('awesomeness_' + alltypes().attributes[i-1].type, awesome_rand_dynamic_type_entity(alltypes().attributes[i-1].name), this.callback); }},
   function(i) { return h.r_like(200, awesome_rand_dynamic_type_entity(alltypes().attributes[i-1].name), null); });
  
-["eq", "ne", "gt", "ge", "lt", "le"].forEach (function(o) {
+["eq", "ne", "gt", "ge", "lt", "le"].forEach(function(o) {
 h.add_n_tests(s, alltypes().attributes.length,
   function(i) { return 'index get ' + o + ' (rand) type: ' + alltypes().attributes[i-1].type + ' attribute: ' + alltypes().attributes[i-1].name },
   function(i) { return function() {
