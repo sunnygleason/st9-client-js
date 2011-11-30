@@ -139,3 +139,23 @@ var uniq_schema = function(index, count) {
 }
 
 exports.uniq_schema = uniq_schema;
+
+
+var uniq_compound_schema = function(index, count) {
+  return make_schema(
+    [{name:"x",type:"I32",nullable:false},{"name":"y","type":"I32"}],
+    [{"name":"uniq_xy","unique":true,"cols":[{"name":"x","sort":"ASC"},{"name":"y","sort":"ASC"}]}],
+    []);
+}
+
+exports.uniq_compound_schema = uniq_compound_schema;
+
+
+var uniq_xform_schema = function(index, count) {
+  return make_schema(
+    [{name:"e",type:"UTF8_SMALLSTRING",nullable:false}],
+    [{"name":"uniq_e","unique":true,"cols":[{"name":"e","sort":"ASC",transform:"LOWERCASE"}]}],
+    []);
+}
+
+exports.uniq_xform_schema = uniq_xform_schema;
