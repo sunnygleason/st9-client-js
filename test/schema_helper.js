@@ -131,3 +131,11 @@ var make_alltypes_rand = function() {
 
 exports.make_alltypes_rand = make_alltypes_rand;
 
+var uniq_schema = function(index, count) {
+  return make_schema(
+    [{name:"x",type:"I32",nullable:false},{"name":"y","type":"I32"}],
+    [{"name":"uniq_x","unique":true,"cols":[{"name":"x","sort":"ASC"}]}],
+    []);
+}
+
+exports.uniq_schema = uniq_schema;

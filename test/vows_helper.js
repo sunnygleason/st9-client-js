@@ -45,6 +45,34 @@ function r_like(code, some_body, reason) {
 
 exports.r_like = r_like;
 
+function r_like_multi(code, body, reason) {
+	return function(a, s) {
+      var actual = a.body.split("\n");
+      var expected = body.split("\n");
+      assert.equal(actual.length, expected.length);
+
+      for (var i = 0; i < actual.length; i++) {
+          if (actual[i] == "") {
+              continue;
+          }
+          var aJson = JSON.parse(actual[i]);
+          var eJson = JSON.parse(expected[i]);
+          var tryJson = {};
+
+          for (k in eJson) {
+            tryJson[k] = aJson[k];
+          }
+
+          assert.equal(expected[i], JSON.stringify(tryJson));
+      }
+
+      assert.equal(a.reason, reason);
+      assert.equal(a.status, code);
+	};
+}
+
+exports.r_like_multi = r_like_multi;
+
 function make_test(name, todo, validate) {
   return { name: name, f : todo, v : validate };
 }

@@ -18,7 +18,7 @@ h.add_test(s, 'connectivity failure : bad port', function() { badport.admin_expo
 
 h.add_test(s, 'nuke', function() { client.admin_nuke(false, this.callback); }, h.r_eq(200, null, null));
 
-h.add_test(s, 'export_all', function() { client.admin_export(this.callback); }, h.r_eq(200, '{"$export":"BEGIN"}\n{"id":"@$schema:1a9ec16ad6118ca9","kind":"$schema","$type":"$key","$status":"N","version":"1","attributes":[],"indexes":[],"counters":[]}\n{"$export":"OK"}\n', null));
+h.add_test(s, 'export_all', function() { client.admin_export(this.callback); }, h.r_like_multi(200, '{"$export":"BEGIN"}\n{"id":"@$schema:1a9ec16ad6118ca9","kind":"$schema","$type":"$key","$status":"N","version":"1","attributes":[],"indexes":[],"counters":[]}\n{"$export":"OK"}\n', null));
 h.add_test(s, 'nuke', function() { client.admin_nuke(false, this.callback); }, h.r_eq(200, null, null));
 
 h.add_test(s, 'schema_create[0]', function() { client.schema_create('foo', schema(), this.callback); }, h.r_like(200, schema(), null));
@@ -121,5 +121,11 @@ h.add_n_tests(s, 11,
 
 h.add_test(s, 'counter_get[5]', function() { client.counter_get("awesome", "by_awesomeness", [], this.callback); },
   h.r_eq(200, {"kind":"awesome","counter":"by_awesomeness","query":{},"results":[],"pageSize":1000,"next":null,"prev":null}, null));
+
+h.add_test(s, 'nuke', function() { client.admin_nuke(false, this.callback); }, h.r_eq(200, null, null));
+h.add_test(s, 'schema_create[3]',    function() { client.schema_create('uniq', test_schema.uniq_schema(), this.callback); }, h.r_like(200, test_schema.uniq_schema(), null));
+h.add_test(s, 'entity_create_ok[0]', function() { client.entity_create('uniq', {x:1,y:-1}, this.callback); }, h.r_like(200, {x:1,y:-1}, null));
+h.add_test(s, 'entity_create_ok[1]', function() { client.entity_create('uniq', {x:2,y:-1}, this.callback); }, h.r_like(200, {x:2,y:-1}, null));
+h.add_test(s, 'entity_create_bad[2]', function() { client.entity_create('uniq', {x:1,y:-1}, this.callback); }, h.r_like(409, null, "unique index constraint violation"));
 
 s.export(module);
