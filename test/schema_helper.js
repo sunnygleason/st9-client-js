@@ -143,7 +143,7 @@ exports.uniq_schema = uniq_schema;
 
 var uniq_compound_schema = function(index, count) {
   return make_schema(
-    [{name:"x",type:"I32",nullable:false},{"name":"y","type":"I32"}],
+    [{name:"x",type:"I32",nullable:false},{"name":"y","type":"I32",nullable:false}],
     [{"name":"uniq_xy","unique":true,"cols":[{"name":"x","sort":"ASC"},{"name":"y","sort":"ASC"}]}],
     []);
 }
