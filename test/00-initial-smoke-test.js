@@ -119,6 +119,12 @@ h.add_n_tests(s, 11,
   function(i) { return h.r_eq(200, null, null) }
 );
 
+h.add_n_tests(s, 11,
+  function(i) { return 'entity_redelete_awesome[' + i + ']' },
+  function(i) { return function() { client.entity_delete('awesome:' + i, this.callback); } },
+  function(i) { return h.r_eq(404, null, null) }
+);
+
 h.add_test(s, 'counter_get[5]', function() { client.counter_get("awesome", "by_awesomeness", [], this.callback); },
   h.r_eq(200, {"kind":"awesome","counter":"by_awesomeness","query":{},"results":[],"pageSize":1000,"next":null,"prev":null}, null));
 

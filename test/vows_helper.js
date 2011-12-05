@@ -19,7 +19,9 @@ exports.add_n_tests = add_n_tests;
 
 function r_eq(code, body, reason) {
 	return function(a, s) {
-      assert.deepEqual(a.body, body);
+      if (a.body != null && body != null) {
+        assert.deepEqual(a.body, body);
+      }
       assert.equal(a.reason, reason);
       assert.equal(a.status, code);
 	};
@@ -29,7 +31,7 @@ exports.r_eq = r_eq;
 
 function r_like(code, some_body, reason) {
   return function(a, s) {
-    if (a == null && some_body == null) {
+    if (a.body == null && some_body == null) {
       // ok, same
     } else {
       for (k in some_body) {
