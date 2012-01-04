@@ -26,6 +26,10 @@ h.add_test(s, 'create entity[5]', function() { client.entity_create('point', {"x
 h.add_test(s, 'create entity[6]', function() { client.entity_create('point', {"x":3,"y":0}, this.callback); }, h.r_like(200, null, null));
 h.add_test(s, 'get entity[0] out of 7', function() { client.index_get('point', "xy", "x eq 1 and y eq 9", this.callback); }, h.r_like(200, {results:[{id:'@point:5eae81437e481933'}]}, null));
 
+h.add_test(s, 'entity_index_all',
+  function() { client.index_get('point', 'all', null, this.callback); },
+  h.r_eq(200,{ kind: 'point', index: 'all', results: [{ id: '@point:99713f76ab052eca' },{ id: '@point:5eae81437e481933' },{ id: '@point:99713f76ab052eca' },{ id: '@point:277a4b8b9de927dc' },{ id: '@point:b6be3461e212d989' },{ id: '@point:f9897dd1fa8114df' },{ id: '@point:4d1515c73734221f' },{ id: '@point:e4470596bba7cf09' }],pageSize: 100,next: null,prev: null}, null));
+
 // Operator Tests
 h.add_test(s, 'get entity ne', function() { client.index_get('point', "xy", "x ne 1", this.callback); }, h.r_like(200, {results:[{id:'@point:4d1515c73734221f'},{id:'@point:99713f76ab052eca'},{id:'@point:e4470596bba7cf09'},{id:'@point:277a4b8b9de927dc'},{id:'@point:b6be3461e212d989'},{id:'@point:f9897dd1fa8114df'}]}, null));
 h.add_test(s, 'get entity ne', function() { client.index_get('point', "xy", "x ne 1", this.callback); }, h.r_like(200, {results:[{id:'@point:4d1515c73734221f'},{id:'@point:99713f76ab052eca'},{id:'@point:e4470596bba7cf09'},{id:'@point:277a4b8b9de927dc'},{id:'@point:b6be3461e212d989'},{id:'@point:f9897dd1fa8114df'}]}, null));
