@@ -131,6 +131,15 @@ var make_alltypes_rand = function() {
 
 exports.make_alltypes_rand = make_alltypes_rand;
 
+var uniq_string_schema = function() {
+  return make_schema(
+    [{name:"email",type:"UTF8_SMALLSTRING",nullable:false}],
+    [{name:"email",unique:true,"cols":[{"name":"email",transform:"LOWERCASE","sort":"ASC"}]}],
+    []);
+}
+
+exports.uniq_string_schema = uniq_string_schema;
+
 var uniq_schema = function(index, count) {
   return make_schema(
     [{name:"x",type:"I32",nullable:false},{"name":"y","type":"I32"}],

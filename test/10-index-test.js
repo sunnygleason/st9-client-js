@@ -8,6 +8,7 @@ var client  = new st9.St9Client('localhost', 7331);
 var s = vows.describe('st9 index tests');
 
 var point_schema = test_schema.point_schema(true, true);
+var uniq_string_schema = test_schema.uniq_string_schema();
 
 h.add_test(s, 'nuke[0]', function() { client.admin_nuke(false, this.callback); }, h.r_eq(200, null, null));
 
@@ -28,7 +29,7 @@ h.add_test(s, 'get entity[0] out of 7', function() { client.index_get('point', "
 
 h.add_test(s, 'entity_index_all',
   function() { client.index_get('point', 'all', null, this.callback); },
-  h.r_eq(200,{ kind: 'point', index: 'all', results: [{ id: '@point:99713f76ab052eca' },{ id: '@point:5eae81437e481933' },{ id: '@point:99713f76ab052eca' },{ id: '@point:277a4b8b9de927dc' },{ id: '@point:b6be3461e212d989' },{ id: '@point:f9897dd1fa8114df' },{ id: '@point:4d1515c73734221f' },{ id: '@point:e4470596bba7cf09' }],pageSize: 100,next: null,prev: null}, null));
+  h.r_eq(200,{ kind: 'point', index: 'all', results: [{ id: '@point:5eae81437e481933' },{ id: '@point:99713f76ab052eca' },{ id: '@point:277a4b8b9de927dc' },{ id: '@point:b6be3461e212d989' },{ id: '@point:f9897dd1fa8114df' },{ id: '@point:4d1515c73734221f' },{ id: '@point:e4470596bba7cf09' }],pageSize: 100,next: null,prev: null}, null));
 
 // Operator Tests
 h.add_test(s, 'get entity ne', function() { client.index_get('point', "xy", "x ne 1", this.callback); }, h.r_like(200, {results:[{id:'@point:4d1515c73734221f'},{id:'@point:99713f76ab052eca'},{id:'@point:e4470596bba7cf09'},{id:'@point:277a4b8b9de927dc'},{id:'@point:b6be3461e212d989'},{id:'@point:f9897dd1fa8114df'}]}, null));
@@ -143,7 +144,36 @@ h.add_n_tests(s, alltypes().attributes.length,
       return h.r_like(400, null, null);
     }
     return h.r_like(200, null, null);
-  });	
+  });    
 });
+
+// Create Schema for cases where indexes have same name in different entities
+h.add_test(s, 'create uniq1_string_schema', function() { client.schema_create('uniq_email1', uniq_string_schema, this.callback); }, h.r_like(200, null, null));
+h.add_test(s, 'create uniq2_string_schema', function() { client.schema_create('uniq_email2', uniq_string_schema, this.callback); }, h.r_like(200, null, null));
+
+// Entity tests for cases where indexes have same name in different entities
+h.add_test(s, 'get entity that does not exist', function() { client.index_get('uniq_email1', "email", 'email+eq+"food@bar.com"', this.callback); }, h.r_like(200, {results:[]}, null));
+h.add_test(s, 'create entity[0]', function() { client.entity_create('uniq_email1', {"email":"food@bar.com"}, this.callback); }, h.r_like(200, null , null));
+h.add_test(s, 'create entity[1]', function() { client.entity_create('uniq_email1', {"email":"fool@bar.com"}, this.callback); }, h.r_like(200, null , null));
+h.add_test(s, 'create entity[2]', function() { client.entity_create('uniq_email1', {"email":"foop@bar.com"}, this.callback); }, h.r_like(200, null , null));
+h.add_test(s, 'get entity[0] out of 1', function() { client.index_get('uniq_email1', "email", 'email+eq+"food@bar.com"', this.callback); }, h.r_like(200, {results:[{id:'@uniq_email1:c5a3d107174ed1f4'}]}, null));
+h.add_test(s, 'get entity[0] out of 1', function() { client.index_get('uniq_email1', "email", 'email+eq+"FOOD@bar.com"', this.callback); }, h.r_like(200, {results:[{id:'@uniq_email1:c5a3d107174ed1f4'}]}, null));
+h.add_test(s, 'get entity[0] out of 1', function() { client.index_get('uniq_email1', "email", 'email+eq+"fool@bar.com"', this.callback); }, h.r_like(200, {results:[{id:'@uniq_email1:5aa90f7c3d637929'}]}, null));
+h.add_test(s, 'get entity[0] out of 1', function() { client.index_get('uniq_email1', "email", 'email+eq+"FOOl@bar.com"', this.callback); }, h.r_like(200, {results:[{id:'@uniq_email1:5aa90f7c3d637929'}]}, null));
+h.add_test(s, 'entity_unique_ok[1]', function() { client.unique_get('uniq_email1', 'email', 'email+eq+"FOOl@bar.com"', this.callback); }, h.r_like(200, {email:"fool@bar.com"}, null));
+h.add_test(s, 'entity_unique_ok[1]', function() { client.unique_get('uniq_email1', 'email', 'email+eq+"FOOd@bar.com"', this.callback); }, h.r_like(200, {email:"food@bar.com"}, null));
+
+h.add_test(s, 'get entity that does not exist', function() { client.index_get('uniq_email2', "email", 'email+eq+"food@bar.com"', this.callback); }, h.r_like(200, {results:[]}, null));
+h.add_test(s, 'create entity[0]', function() { client.entity_create('uniq_email2', {"email":"foop@bar.com"}, this.callback); }, h.r_like(200, null , null));
+h.add_test(s, 'create entity[0]', function() { client.entity_create('uniq_email2', {"email":"fool@bar.com"}, this.callback); }, h.r_like(200, null , null));
+h.add_test(s, 'create entity[0]', function() { client.entity_create('uniq_email2', {"email":"food@bar.com"}, this.callback); }, h.r_like(200, null , null));
+h.add_test(s, 'get entity[0] out of 1', function() { client.index_get('uniq_email2', "email", 'email+eq+"food@bar.com"', this.callback); }, h.r_like(200, {results:[{id:'@uniq_email2:734721d6ab7c6496'}]}, null));
+h.add_test(s, 'get entity[0] out of 1', function() { client.index_get('uniq_email2', "email", 'email+eq+"FOOD@bar.com"', this.callback); }, h.r_like(200, {results:[{id:'@uniq_email2:734721d6ab7c6496'}]}, null));
+h.add_test(s, 'get entity[0] out of 1', function() { client.index_get('uniq_email2', "email", 'email+eq+"fool@bar.com"', this.callback); }, h.r_like(200, {results:[{id:'@uniq_email2:40e59c58808e32ff'}]}, null));
+h.add_test(s, 'get entity[0] out of 1', function() { client.index_get('uniq_email2', "email", 'email+eq+"FOOl@bar.com"', this.callback); }, h.r_like(200, {results:[{id:'@uniq_email2:40e59c58808e32ff'}]}, null));
+h.add_test(s, 'entity_unique_ok[1]', function() { client.unique_get('uniq_email2', 'email', 'email+eq+"FOOl@bar.com"', this.callback); }, h.r_like(200, {email:"fool@bar.com"}, null));
+h.add_test(s, 'entity_unique_ok[1]', function() { client.unique_get('uniq_email2', 'email', 'email+eq+"FOOd@bar.com"', this.callback); }, h.r_like(200, {email:"food@bar.com"}, null));
+
+h.add_test(s, 'get entity[0] out of 1', function() { client.index_get('uniq_email1', "email", 'email+eq+"food@bar.com"', this.callback); }, h.r_like(200, {results:[{id:'@uniq_email1:c5a3d107174ed1f4'}]}, null));
 
 s.export(module);

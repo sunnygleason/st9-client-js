@@ -32,7 +32,7 @@ h.add_n_tests(s, 10,
 
 h.add_test(s, 'entity_index_all',
   function() { client.index_get('foo', 'all', null, this.callback); },
-  h.r_eq(200,{ kind: 'foo', index: 'all', results: [{ id: '@foo:ce4ad6a1cd6293d9' },{ id: '@foo:190272f987c6ac27' },{ id: '@foo:ce4ad6a1cd6293d9' },{ id: '@foo:573c812fe6841168' },{ id: '@foo:f79fe6c8ee441b18' },{ id: '@foo:5b7f06a2fbf79d07' },{ id: '@foo:9c7897f5fe867388' },{ id: '@foo:0f32df4fcddc0f69' },{ id: '@foo:3c968c214299530c' },{ id: '@foo:d714f06f550102b5' },{ id: '@foo:0c747610470ef631' }],pageSize: 100,next: null,prev: null}, null));
+  h.r_eq(200,{ kind: 'foo', index: 'all', results: [{ id: '@foo:190272f987c6ac27' },{ id: '@foo:ce4ad6a1cd6293d9' },{ id: '@foo:573c812fe6841168' },{ id: '@foo:f79fe6c8ee441b18' },{ id: '@foo:5b7f06a2fbf79d07' },{ id: '@foo:9c7897f5fe867388' },{ id: '@foo:0f32df4fcddc0f69' },{ id: '@foo:3c968c214299530c' },{ id: '@foo:d714f06f550102b5' },{ id: '@foo:0c747610470ef631' }],pageSize: 100,next: null,prev: null}, null));
 
 h.add_test(s, 'entity_multiget',
   function() { client.entity_multiget(['foo:1', 'foo:2', 'foo:3'], this.callback); },
