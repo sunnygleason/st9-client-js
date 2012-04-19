@@ -3,6 +3,7 @@ var make_schema = function(attrs, indexes, counts) {
   var ret_val = {attributes:attrs};
   ret_val.indexes  = (indexes || []);
   ret_val.counters = (counts || []);
+  ret_val.fulltexts = [];
 
   return ret_val;
 };

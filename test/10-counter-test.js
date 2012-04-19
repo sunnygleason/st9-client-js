@@ -19,18 +19,22 @@ var awesome_dynamic_type_schema = function(theType) {
 	if (theType == "ENUM") {
 		return { attributes:[{name:'awesome', type:theType, nullable:false, values:["FOO","BAR","BAZ","QUUX"]},
 													{name:'cool',type:theType, nullable:false, values:["FOO","BAR","BAZ","QUUX"]}],
-						 indexes:[],
+				     indexes:[],
 			  		 counters:[{name:'byAwesome',cols:[{name:'awesome',sort:'ASC'}]},
                        {name:'byCool',cols:[{name:'cool',sort:'ASC'}]},
                        {name:'byAwesomeCool',cols:[{name:'awesome',sort:'ASC'},
-                                                 {name:'cool',sort:'ASC'}]}] }; }
+                                                 {name:'cool',sort:'ASC'}]}],
+                      fulltexts:[]};
+    }
 	return { attributes:[{name:'awesome', type:theType, nullable:false},
 												{name:'cool',type:theType, nullable:false}],
 					 indexes:[],
 					 counters:[{name:'byAwesome',cols:[{name:'awesome',sort:'ASC'}]},
                      {name:'byCool',cols:[{name:'cool',sort:'ASC'}]},
                      {name:'byAwesomeCool',cols:[{name:'awesome',sort:'ASC'},
-                                                 {name:'cool',sort:'ASC'}]}] }; }
+                                                 {name:'cool',sort:'ASC'}]}],
+                     fulltexts:[]};
+};
 
 
 var awesome_dynamic_type_entity = function(which_awe, which_cool, theTypeName) {

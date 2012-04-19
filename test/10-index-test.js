@@ -59,7 +59,7 @@ var awesome_dynamic_type_schema = function(theType) {
          {name:'awesome',sort:'ASC'},
          {name:'cool',sort:'ASC'},
          {name:'id',sort:'ASC'}]}],
-       counters:[]};
+       counters:[],fulltexts:[]};
    };
 
    return {
@@ -70,7 +70,7 @@ var awesome_dynamic_type_schema = function(theType) {
        {name:'awesome',sort:'ASC'},
        {name:'cool',sort:'ASC'},
        {name:'id',sort:'ASC'}]}],
-     counters:[]};
+     counters:[],fulltexts:[]};
 }
 
 var awesome_min_dynamic_type_entity = function(theTypeName) { 

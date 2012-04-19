@@ -6,7 +6,7 @@ var h            = require('./vows_helper.js');
 var client  = new st9.St9Client('localhost', 7331);
 var s = vows.describe('st9 entity tests');
 
-var a_schema = { attributes : [], indexes : [], counters : [] };
+var a_schema = { attributes : [], indexes : [], counters : [], fulltexts : [] };
 
 
 h.add_test(s, 'nuke[0]', function() { client.admin_nuke(false, this.callback); }, h.r_eq(200, null, null));
@@ -43,7 +43,7 @@ h.add_test(s, 'nuke[0]', function() { client.entity_create('foo',{y:123,x:"sdf"}
 h.add_test(s, 'nuke[0]', function() { client.entity_create('foo',{y:123,x:456}, this.callback); }, h.r_like(200, null, null));
 
 // schema endpoint tests
-var point_schema = {"attributes":[{"name":"x","type":"I32"},{"name":"y","type":"I32"}],"indexes":[{"name":"xy","cols":[{"name":"x","sort":"ASC"},{"name":"y","sort":"ASC"},{"name":"id","sort":"ASC"}]}],"counters":[]};
+var point_schema = {"attributes":[{"name":"x","type":"I32"},{"name":"y","type":"I32"}],"indexes":[{"name":"xy","cols":[{"name":"x","sort":"ASC"},{"name":"y","sort":"ASC"},{"name":"id","sort":"ASC"}]}],"counters":[],"fulltexts":[]};
 
 h.add_test(s, 'schema_create', function() { client.schema_create('point', point_schema, this.callback); }, h.r_like(200, point_schema, null));
 h.add_test(s, 'schema_get', function() { client.schema_get('point', this.callback); }, h.r_like(200, point_schema, null));
@@ -62,7 +62,7 @@ h.add_test(s, 'entity_create', function() { client.entity_create('foo',{"foo":tr
 h.add_test(s, 'entity_get', function() { client.entity_get('foo:1', this.callback); }, h.r_eq(200, {id: '@foo:190272f987c6ac27',kind: 'foo',version: '1',x: 1,y: 2011}, null));
 h.add_test(s, 'schema_delete', function() { client.schema_delete('foo:1', this.callback); }, h.r_eq(404, null, "type not found"));
 
-h.add_test(s, 'schema_create', function() { client.schema_create('message',{"attributes":[{"name":"msg","type":"UTF8_SMALLSTRING"},{"name":"hotness","type":"ENUM","values":["COOL","HOT"]}],"indexes":[{"name":"hotmsg","cols":[{"name":"hotness","sort":"ASC"},{"name":"msg","sort":"ASC"},{"name":"id","sort":"ASC"}]}],"counters":[]}, this.callback); }, h.r_like(200, null, null));
+h.add_test(s, 'schema_create', function() { client.schema_create('message',{"attributes":[{"name":"msg","type":"UTF8_SMALLSTRING"},{"name":"hotness","type":"ENUM","values":["COOL","HOT"]}],"indexes":[{"name":"hotmsg","cols":[{"name":"hotness","sort":"ASC"},{"name":"msg","sort":"ASC"},{"name":"id","sort":"ASC"}]}],"counters":[],"fulltexts":[]}, this.callback); }, h.r_like(200, null, null));
 h.add_test(s, 'entity_create', function() { client.entity_create('message',{"msg":"hello world","hotness":"COOL"}, this.callback); }, h.r_like(200, null, null));
 h.add_test(s, 'entity_create', function() { client.entity_create('message',{"msg":"fly like a G6","hotness":"HOT"}, this.callback); }, h.r_like(200, null, null));
 h.add_test(s, 'entity_create', function() { client.entity_create('message',{"msg":"\"double\" 'quotes'","hotness":"HOT"}, this.callback); }, h.r_like(200, null, null));
@@ -76,10 +76,10 @@ h.add_test(s, 'index_get', function() { client.index_get('message', "hotmsg", "h
 h.add_test(s, 'index_get', function() { client.index_get('message', "hotmsg", "hotness+eq+\"COOL\"+and+msg+eq+\"\\\"\"", this.callback); },
   h.r_eq(200,{kind:'message',index:'hotmsg',query:"hotness eq \"COOL\" and msg eq \"\\\"\"",results:[{id:'@message:27955107deb3f41d'},{id:'@message:f5bc7f381e996933'}],pageSize:100,next:null,prev:null}, null));
 
-var awesome_schema = {"attributes":[{"name":"isAwesome","type":"BOOLEAN"}],"indexes":[],"counters":[]};
+var awesome_schema = {"attributes":[{"name":"isAwesome","type":"BOOLEAN"}],"indexes":[],"counters":[],"fulltexts":[]};
 
 h.add_test(s, 'schema_create', function() { client.schema_create('awesome','a string literal will break you', this.callback); }, h.r_eq(400, null, 'invalid schema definition json'));
-h.add_test(s, 'schema_create', function() { client.schema_create('awesome', awesome_schema, this.callback); }, h.r_eq(200,{id: '@$schema:9d5e5cfb941662e6',kind: '$schema',version: '1',attributes: [{name:'isAwesome',type:'BOOLEAN'}],indexes:[],counters:[]}, null));
+h.add_test(s, 'schema_create', function() { client.schema_create('awesome', awesome_schema, this.callback); }, h.r_eq(200,{id: '@$schema:9d5e5cfb941662e6',kind: '$schema',version: '1',attributes: [{name:'isAwesome',type:'BOOLEAN'}],indexes:[],counters:[],"fulltexts":[]}, null));
 h.add_test(s, 'schema_create', function() { client.entity_create('awesome',{"target":"foo:1","isAwesome":true,"hotness":"COOL","year":1970}, this.callback); }, h.r_eq(200, {id:'@awesome:fc5f6a3761d6f960',kind:'awesome',version:'1',target:'foo:1',isAwesome:true,hotness:'COOL',year:1970}, null));
 h.add_test(s, 'schema_create', function() { client.entity_create('awesome',{"target":"foo:2","isAwesome":false,"hotness":"TEH_HOTNESS","year":1980}, this.callback); }, h.r_like(200, null, null));
 
